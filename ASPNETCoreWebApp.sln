@@ -5,6 +5,10 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETCoreWebApp", "ASPNETCoreWebApp.csproj", "{8664A01B-436C-4149-8047-71726237A00D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{88AAC2AC-8764-48E8-BBEC-B5BAECC0ADDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETCoreWebApp.Tests", "tests\ASPNETCoreWebApp.Tests\ASPNETCoreWebApp.Tests.csproj", "{9405C748-4E0D-4CF3-9C03-6F646A5E4779}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,11 +19,18 @@ Global
 		{8664A01B-436C-4149-8047-71726237A00D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8664A01B-436C-4149-8047-71726237A00D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8664A01B-436C-4149-8047-71726237A00D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9405C748-4E0D-4CF3-9C03-6F646A5E4779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9405C748-4E0D-4CF3-9C03-6F646A5E4779}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9405C748-4E0D-4CF3-9C03-6F646A5E4779}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9405C748-4E0D-4CF3-9C03-6F646A5E4779}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD69CC0F-28CE-4FBA-8249-62098D79FF02}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9405C748-4E0D-4CF3-9C03-6F646A5E4779} = {88AAC2AC-8764-48E8-BBEC-B5BAECC0ADDA}
 	EndGlobalSection
 EndGlobal
