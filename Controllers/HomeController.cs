@@ -1,9 +1,11 @@
 ﻿using ASPNETCoreWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using MethodTimer;
 
 namespace ASPNETCoreWebApp.Controllers
 {
+    [Time]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
