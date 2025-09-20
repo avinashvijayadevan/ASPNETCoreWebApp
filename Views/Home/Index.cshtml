@@ -1,14 +1,94 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@inject IDocumentationService Documentation
+@{
+    ViewData["Title"] = "A GitBook-inspired experience";
+    var spaces = Documentation.GetBooks();
+    var featuredSpace = spaces.FirstOrDefault();
+    var latestChapters = spaces
+        .SelectMany(book => book.Chapters.Select(chapter => (book, chapter)))
+        .OrderByDescending(tuple => tuple.book.LastUpdated)
+        .ThenBy(tuple => tuple.chapter.Order)
+        .Take(3)
+        .ToList();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to code2cloud 3rd time</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <label for="envSelect" class="form-label mt-3">Environment</label>
-    <select id="envSelect" class="form-select">
-        <option>Dev</option>
-        <option>QA</option>
-        <option>STG</option>
-    </select>
-</div>
+<section class="hero">
+    <div class="container hero__inner">
+        <div class="hero__content">
+            <p class="eyebrow">GitBook Lite</p>
+            <h1>Publish knowledge your team will adore</h1>
+            <p class="lead">Spin up spaces that look and feel like GitBook — complete with beautiful typography, sticky navigation and collaborative storytelling.</p>
+            <div class="actions">
+                <a class="btn btn-primary" asp-controller="Books" asp-action="Index">Explore spaces</a>
+                @if (featuredSpace is not null)
+                {
+                    var firstChapter = featuredSpace.Chapters.OrderBy(c => c.Order).FirstOrDefault();
+                    if (firstChapter is not null)
+                    {
+                        <a class="btn btn-ghost" asp-controller="Books" asp-action="Chapter" asp-route-bookSlug="@featuredSpace.Slug" asp-route-chapterSlug="@firstChapter.Slug">Tour the product guide</a>
+                    }
+                }
+            </div>
+            <ul class="hero__stats">
+                <li><strong>@spaces.Count</strong><span>spaces ready to clone</span></li>
+                <li><strong>@spaces.Sum(space => space.Chapters.Count)</strong><span>chapters of curated best practices</span></li>
+                <li><strong>5 min</strong><span>to launch your first space</span></li>
+            </ul>
+        </div>
+        <div class="hero__preview">
+            <div class="preview-window">
+                <div class="preview-window__header">
+                    <span></span><span></span><span></span>
+                </div>
+                <div class="preview-window__body">
+                    <p class="preview-window__label">Spaces</p>
+                    <h3>@(featuredSpace?.Title ?? "Your next documentation hub")</h3>
+                    <p>@(featuredSpace?.Description ?? "Layer navigation, callouts and collaboration just like GitBook does.")</p>
+                    <ul>
+                        <li>Nested navigation with sticky context</li>
+                        <li>Callouts, tips and structured sections</li>
+                        <li>Accessible, responsive design</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container highlights">
+    <header>
+        <h2>Why teams choose GitBook Lite</h2>
+        <p>We distilled the essence of GitBook into reusable building blocks for your .NET apps.</p>
+    </header>
+    <div class="highlights__grid">
+        <article>
+            <h3>Spaces as your knowledge OS</h3>
+            <p>Group related documentation into spaces so contributors stay focused and readers never get lost.</p>
+        </article>
+        <article>
+            <h3>Crafted storytelling</h3>
+            <p>Mix prose, checklists and callouts to guide readers. Every chapter ships with thoughtful defaults you can adapt in seconds.</p>
+        </article>
+        <article>
+            <h3>Actionable analytics</h3>
+            <p>Use the example insights chapter to understand how GitBook turns reader behavior into feedback loops.</p>
+        </article>
+    </div>
+</section>
+
+<section class="container latest">
+    <header>
+        <h2>Latest chapters</h2>
+        <p>A peek at the storytelling patterns included in each space.</p>
+    </header>
+    <div class="latest__grid">
+        @foreach (var (book, chapter) in latestChapters)
+        {
+            <article>
+                <span class="tag">@book.Title</span>
+                <h3>@chapter.Title</h3>
+                <p>@chapter.Summary</p>
+                <a asp-controller="Books" asp-action="Chapter" asp-route-bookSlug="@book.Slug" asp-route-chapterSlug="@chapter.Slug">Read chapter →</a>
+            </article>
+        }
+    </div>
+</section>
