@@ -1,0 +1,111 @@
+@model IReadOnlyList<Book>
+@{
+    ViewData["Title"] = "Documentation library";
+    var featured = Model.FirstOrDefault();
+}
+
+<section class="library-hero">
+    <div class="library-hero__content">
+        <p class="eyebrow">Spaces</p>
+        <h1>All of your knowledge, beautifully organized</h1>
+        <p class="lead">
+            Explore a curated library of GitBook-style documentation spaces. Each space pairs intuitive navigation with
+            rich storytelling so your team can ship clarity, faster.
+        </p>
+        <div class="actions">
+            <a class="btn btn-primary" asp-controller="Books" asp-action="Index">Browse library</a>
+            @if (featured is not null && featured.Chapters.Any())
+            {
+                var firstChapter = featured.Chapters.OrderBy(c => c.Order).First();
+                <a class="btn btn-ghost" asp-controller="Books" asp-action="Chapter" asp-route-bookSlug="@featured.Slug" asp-route-chapterSlug="@firstChapter.Slug">
+                    Jump into @firstChapter.Title
+                </a>
+            }
+        </div>
+        <ul class="metrics">
+            <li>
+                <strong>@Model.Sum(book => book.Chapters.Count)</strong>
+                <span>chapters of best-practice guidance</span>
+            </li>
+            <li>
+                <strong>@Model.Count</strong>
+                <span>spaces tailored for your team</span>
+            </li>
+            <li>
+                <strong>100%</strong>
+                <span>authored in a GitBook-inspired editor</span>
+            </li>
+        </ul>
+    </div>
+    <div class="library-hero__preview">
+        <div class="preview-card">
+            <div class="preview-card__header">
+                <span class="preview-icon">📚</span>
+                <span class="preview-label">Spaces overview</span>
+            </div>
+            <div class="preview-card__body">
+                <h3>@(featured?.Title ?? "Create gorgeous documentation")</h3>
+                <p>@(featured?.Description ?? "Bring your product, onboarding and team rituals together in one elegant experience.")</p>
+                <ul>
+                    <li>Responsive layout that mirrors GitBook navigation</li>
+                    <li>Sticky table of contents for effortless scanning</li>
+                    <li>Handcrafted sample content so you can move fast</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="book-grid">
+    <header>
+        <h2>Featured spaces</h2>
+        <p>Clone a space to kick-start your own documentation experience.</p>
+    </header>
+    <div class="book-grid__items">
+        @foreach (var book in Model)
+        {
+            var firstChapter = book.Chapters.OrderBy(chapter => chapter.Order).FirstOrDefault();
+            <article class="book-card" style="--book-accent: @book.AccentColor;">
+                <a asp-controller="Books" asp-action="Chapter" asp-route-bookSlug="@book.Slug" asp-route-chapterSlug="@firstChapter?.Slug">
+                    <span class="book-card__icon" aria-hidden="true">@book.Icon</span>
+                    <div class="book-card__body">
+                        <div class="book-card__meta">
+                            <span class="tag">Updated @book.LastUpdated.ToString("MMMM yyyy")</span>
+                            <span class="tag">@book.Chapters.Count chapter@(book.Chapters.Count == 1 ? string.Empty : "s")</span>
+                        </div>
+                        <h3>@book.Title</h3>
+                        <p>@book.Description</p>
+                        <ul class="book-card__tags">
+                            @foreach (var tag in book.Tags)
+                            {
+                                <li>@tag</li>
+                            }
+                        </ul>
+                    </div>
+                    <span class="book-card__cta">Open space →</span>
+                </a>
+            </article>
+        }
+    </div>
+</section>
+
+<section class="value-props">
+    <header>
+        <h2>Designed for every part of the journey</h2>
+        <p>From onboarding to product launches, reuse the structure that GitBook popularized.</p>
+    </header>
+    <div class="value-props__grid">
+        <article>
+            <h3>Publish effortlessly</h3>
+            <p>Author collaboratively, keep drafts private, then publish updates with one click. Your readers always see the polished version.</p>
+        </article>
+        <article>
+            <h3>Guide readers with intent</h3>
+            <p>Sticky navigation, rich callouts and bulletproof hierarchies help readers stay oriented as they browse.</p>
+        </article>
+        <article>
+            <h3>Gather feedback in-line</h3>
+            <p>Collect comments and emoji reactions that map directly to the content they reference, just like GitBook.</p>
+        </article>
+    </div>
+</section>

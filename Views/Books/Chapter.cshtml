@@ -1,0 +1,134 @@
+@model BookChapterViewModel
+@{
+    var chapter = Model.CurrentChapter;
+    ViewData["Title"] = chapter is null ? Model.Book.Title : $"{chapter.Title} · {Model.Book.Title}";
+    var sections = chapter?.Sections ?? Array.Empty<ChapterSection>();
+}
+
+<section class="doc-shell">
+    <button class="doc-nav-toggle" type="button" data-doc-toggle aria-controls="docSidebar" aria-expanded="false">
+        <span class="doc-nav-toggle__icon">☰</span>
+        Navigation
+    </button>
+    <aside class="doc-sidebar" id="docSidebar" data-doc-sidebar>
+        <div class="doc-sidebar__brand">
+            <div class="doc-sidebar__icon" style="background: @Model.Book.AccentColor">@Model.Book.Icon</div>
+            <div>
+                <p class="doc-sidebar__title">@Model.Book.Title</p>
+                <p class="doc-sidebar__description">@Model.Book.Description</p>
+            </div>
+        </div>
+        <nav class="doc-sidebar__nav" aria-label="Chapter navigation">
+            <ul>
+                @foreach (var entry in Model.Book.Chapters.OrderBy(c => c.Order).ThenBy(c => c.Title))
+                {
+                    <li class="@(Model.IsActiveChapter(entry) ? "is-active" : string.Empty)">
+                        <a asp-controller="Books" asp-action="Chapter" asp-route-bookSlug="@Model.Book.Slug" asp-route-chapterSlug="@entry.Slug">
+                            <span>@entry.Title</span>
+                            <span class="doc-sidebar__summary">@entry.Summary</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+        <footer class="doc-sidebar__footer">
+            <p class="doc-sidebar__updated">Last updated <strong>@Model.Book.LastUpdated.ToString("MMMM d, yyyy")</strong></p>
+            <ul class="doc-sidebar__tags">
+                @foreach (var tag in Model.Book.Tags)
+                {
+                    <li>@tag</li>
+                }
+            </ul>
+        </footer>
+    </aside>
+
+    <article class="doc-article">
+        @if (chapter is null)
+        {
+            <header class="doc-header">
+                <h1>We're preparing this chapter</h1>
+                <p>Check back soon for fresh guidance. In the meantime, explore the other chapters in this space.</p>
+            </header>
+        }
+        else
+        {
+            <header class="doc-header">
+                <p class="eyebrow">@Model.Book.Title</p>
+                <h1>@chapter.Title</h1>
+                <p class="doc-header__summary">@chapter.Summary</p>
+                <div class="doc-header__meta">
+                    <span>@chapter.EstimatedReadMinutes min read</span>
+                </div>
+            </header>
+
+            <div class="doc-content">
+                @foreach (var section in sections)
+                {
+                    <section id="@section.Anchor" class="doc-section">
+                        <h2>@section.Title</h2>
+                        @foreach (var paragraph in section.Paragraphs)
+                        {
+                            <p>@paragraph</p>
+                        }
+
+                        @if (section.KeyPoints is not null && section.KeyPoints.Any())
+                        {
+                            <div class="doc-section__callout">
+                                <p class="doc-section__callout-title">Key takeaways</p>
+                                <ul>
+                                    @foreach (var point in section.KeyPoints)
+                                    {
+                                        <li>@point</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(section.CalloutBody))
+                        {
+                            <div class="doc-callout doc-callout--@section.CalloutTone">
+                                @if (!string.IsNullOrWhiteSpace(section.CalloutTitle))
+                                {
+                                    <h3>@section.CalloutTitle</h3>
+                                }
+                                <p>@section.CalloutBody</p>
+                            </div>
+                        }
+                    </section>
+                }
+            </div>
+
+            <nav class="doc-pagination" aria-label="Chapter pagination">
+                @if (Model.PreviousChapter is not null)
+                {
+                    <a class="doc-pagination__link doc-pagination__link--previous" asp-controller="Books" asp-action="Chapter" asp-route-bookSlug="@Model.Book.Slug" asp-route-chapterSlug="@Model.PreviousChapter.Slug">
+                        <span class="label">Previous</span>
+                        <span class="title">@Model.PreviousChapter.Title</span>
+                    </a>
+                }
+                <span class="doc-pagination__spacer"></span>
+                @if (Model.NextChapter is not null)
+                {
+                    <a class="doc-pagination__link doc-pagination__link--next" asp-controller="Books" asp-action="Chapter" asp-route-bookSlug="@Model.Book.Slug" asp-route-chapterSlug="@Model.NextChapter.Slug">
+                        <span class="label">Next</span>
+                        <span class="title">@Model.NextChapter.Title</span>
+                    </a>
+                }
+            </nav>
+        }
+    </article>
+
+    <aside class="doc-toc" aria-label="On this page">
+        <div class="doc-toc__inner">
+            <p class="doc-toc__title">On this page</p>
+            <ul>
+                @foreach (var section in sections)
+                {
+                    <li>
+                        <a href="#@section.Anchor">@section.Title</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </aside>
+</section>
