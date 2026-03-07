@@ -62,21 +62,21 @@
             </header>
 
             <div class="doc-content">
-                @foreach (var section in sections)
+                @foreach (var docSection in sections)
                 {
-                    <section id="@section.Anchor" class="doc-section">
-                        <h2>@section.Title</h2>
-                        @foreach (var paragraph in section.Paragraphs)
+                    <section id="@docSection.Anchor" class="doc-section">
+                        <h2>@docSection.Title</h2>
+                        @foreach (var paragraph in docSection.Paragraphs)
                         {
                             <p>@paragraph</p>
                         }
 
-                        @if (section.KeyPoints is not null && section.KeyPoints.Any())
+                        @if (docSection.KeyPoints is not null && docSection.KeyPoints.Any())
                         {
                             <div class="doc-section__callout">
                                 <p class="doc-section__callout-title">Key takeaways</p>
                                 <ul>
-                                    @foreach (var point in section.KeyPoints)
+                                    @foreach (var point in docSection.KeyPoints)
                                     {
                                         <li>@point</li>
                                     }
@@ -84,14 +84,14 @@
                             </div>
                         }
 
-                        @if (!string.IsNullOrWhiteSpace(section.CalloutBody))
+                        @if (!string.IsNullOrWhiteSpace(docSection.CalloutBody))
                         {
-                            <div class="doc-callout doc-callout--@section.CalloutTone">
-                                @if (!string.IsNullOrWhiteSpace(section.CalloutTitle))
+                            <div class="doc-callout doc-callout--@docSection.CalloutTone">
+                                @if (!string.IsNullOrWhiteSpace(docSection.CalloutTitle))
                                 {
-                                    <h3>@section.CalloutTitle</h3>
+                                    <h3>@docSection.CalloutTitle</h3>
                                 }
-                                <p>@section.CalloutBody</p>
+                                <p>@docSection.CalloutBody</p>
                             </div>
                         }
                     </section>
@@ -122,10 +122,10 @@
         <div class="doc-toc__inner">
             <p class="doc-toc__title">On this page</p>
             <ul>
-                @foreach (var section in sections)
+                @foreach (var docSection in sections)
                 {
                     <li>
-                        <a href="#@section.Anchor">@section.Title</a>
+                        <a href="#@docSection.Anchor">@docSection.Title</a>
                     </li>
                 }
             </ul>
