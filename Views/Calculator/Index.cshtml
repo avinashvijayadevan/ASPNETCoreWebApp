@@ -1,0 +1,54 @@
+@model ASPNETCoreWebApp.Models.CalculatorViewModel
+@{
+    ViewData["Title"] = "Calculator";
+}
+
+<div class="container" style="max-width: 480px; margin-top: 3rem;">
+    <h1 class="mb-4">Calculator</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Index" method="post">
+                <div class="mb-3">
+                    <label asp-for="Operand1" class="form-label">First number</label>
+                    <input asp-for="Operand1" type="number" step="any" class="form-control" placeholder="e.g. 10" />
+                    <span asp-validation-for="Operand1" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Operator" class="form-label">Operator</label>
+                    <select asp-for="Operator" class="form-select">
+                        <option value="+">+ Addition</option>
+                        <option value="-">− Subtraction</option>
+                        <option value="*">× Multiplication</option>
+                        <option value="/">÷ Division</option>
+                        <option value="%">% Modulo</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Operand2" class="form-label">Second number</label>
+                    <input asp-for="Operand2" type="number" step="any" class="form-control" placeholder="e.g. 5" />
+                    <span asp-validation-for="Operand2" class="text-danger small"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Calculate</button>
+            </form>
+
+            @if (Model.ErrorMessage is not null)
+            {
+                <div class="alert alert-danger mt-3 mb-0">@Model.ErrorMessage</div>
+            }
+            else if (Model.HasResult)
+            {
+                <div class="alert alert-success mt-3 mb-0 fs-5 text-center">
+                    <strong>Result:</strong> @Model.Operand1 @Model.Operator @Model.Operand2 = <strong>@Model.Result</strong>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
